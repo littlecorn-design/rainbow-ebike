@@ -13,7 +13,6 @@
             --card-bg: rgba(255, 255, 255, 0.08);
             --text-main: #ffffff;
             --text-sub: #b0b0b0;
-            --accent-rainbow: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
         }
 
         * {
@@ -29,62 +28,58 @@
             display: flex;
             justify-content: center;
             min-height: 100vh;
+            /* 背景加入深色漸層，增加質感 */
             background-image: radial-gradient(circle at top, #2a2a2a 0%, #0f0f11 60%);
         }
 
         .container {
             width: 100%;
             max-width: 480px; /* 手機版型大小 */
-            padding: 40px 20px;
+            /* 【修改點】減少上方留白，讓整體往上跑 */
+            padding: 20px 20px 40px; 
             text-align: center;
         }
 
-        /* 頭像與彩虹光圈動畫 */
-/* 頭像調整 (適用不規則透明 Logo) */
-.profile-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 200px; /* 這裡可以調整 Logo 的最大顯示寬度 */
-    margin: 0 auto 30px; /* 增加一點下方的距離 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.profile-img {
-    width: 100%;
-    height: auto; /* 高度自動，維持原本比例 */
-    object-fit: contain; /* 確保整張圖都完整顯示，不裁切 */
-
-    /* 移除原本強制圓形和白底的設定 */
-    border-radius: 0;
-    background-color: transparent;
-    border: none;
-
-    /* [重點特效] 加入依照圖片形狀的發光效果 (Drop Shadow) */
-    /* 這裡用了兩層陰影，製造出藍紫色的霓虹光暈 */
-    filter: drop-shadow(0 0 15px rgba(0, 153, 255, 0.6)) drop-shadow(0 0 30px rgba(225, 0, 255, 0.4));
-
-    transition: transform 0.3s ease, filter 0.3s ease;
-}
-
-/* 滑鼠移過去時的互動特效：稍微放大並增強光暈 */
-.profile-img:hover {
-    transform: scale(1.08) translateY(-5px);
-    filter: drop-shadow(0 0 20px rgba(0, 255, 200, 0.8)) drop-shadow(0 0 40px rgba(225, 0, 255, 0.6));
-}
+        /* 頭像調整 (適用不規則透明 Logo) */
+        .profile-wrapper {
+            position: relative;
+            width: 100%;
+            /* 【修改點】加大 Logo，原本 200 改成 340 */
+            max-width: 340px; 
+            /* 【修改點】調整下方的距離 */
+            margin: 0 auto 10px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        h1 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
+        .profile-img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            
+            /* 不規則圖檔設定 */
+            border-radius: 0;
+            background-color: transparent;
+            border: none;
+            
+            /* [特效] 依照圖片形狀發光 (霓虹感) */
+            filter: drop-shadow(0 0 10px rgba(0, 153, 255, 0.5)) drop-shadow(0 0 25px rgba(225, 0, 255, 0.3));
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        /* 滑鼠移過去時的特效 */
+        .profile-img:hover {
+            transform: scale(1.02) translateY(-2px);
+            filter: drop-shadow(0 0 15px rgba(0, 255, 200, 0.7)) drop-shadow(0 0 35px rgba(225, 0, 255, 0.5));
         }
 
         .description {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: var(--text-sub);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
         }
 
         /* 服務標籤雲 */
@@ -102,10 +97,10 @@
             font-size: 0.75rem;
             padding: 5px 12px;
             border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        /* 重要功能按鈕區 (兩欄) */
+        /* 按鈕樣式 */
         .action-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -126,16 +121,17 @@
             gap: 8px;
             border: 1px solid rgba(255,255,255,0.1);
             transition: transform 0.2s, background 0.2s;
+            backdrop-filter: blur(10px);
         }
 
-        .action-btn i { font-size: 1.5rem; }
-        
-        .action-btn.call { background: linear-gradient(135deg, #ff416c, #ff4b2b); }
-        .action-btn.map { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .action-btn i { font-size: 1.6rem; margin-bottom: 5px; }
+        .action-btn.call { background: linear-gradient(135deg, rgba(255, 65, 108, 0.2), rgba(255, 75, 43, 0.2)); }
+        .action-btn.map { background: linear-gradient(135deg, rgba(17, 153, 142, 0.2), rgba(56, 239, 125, 0.2)); }
 
-        .action-btn:active { transform: scale(0.95); }
+        .action-btn:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.4); }
+        .action-btn:active { transform: scale(0.98); }
 
-        /* 社群連結按鈕 */
+        /* 社群連結 */
         .links-list {
             display: flex;
             flex-direction: column;
@@ -146,48 +142,43 @@
             display: flex;
             align-items: center;
             background: var(--card-bg);
-            padding: 16px 20px;
-            border-radius: 50px; /* 膠囊狀 */
+            padding: 16px 25px;
+            border-radius: 50px;
             text-decoration: none;
             color: white;
             border: 1px solid rgba(255,255,255,0.1);
             transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
         }
-
+        
         .link-item:hover {
             background: rgba(255,255,255,0.15);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             border-color: rgba(255,255,255,0.3);
         }
 
         .link-item i {
-            font-size: 1.5rem;
-            width: 30px;
+            font-size: 1.6rem;
+            width: 35px;
             margin-right: 15px;
             text-align: center;
         }
 
-        .link-item span {
-            font-size: 1rem;
-            font-weight: 500;
-            flex-grow: 1;
-        }
+        .link-item span { font-size: 1.05rem; font-weight: 500; flex-grow: 1; }
         
-        /* 針對不同品牌的顏色微調 (Hover時) */
         .link-item:hover .fa-instagram { color: #E1306C; }
         .link-item:hover .fa-facebook { color: #1877F2; }
         .link-item:hover .fa-tiktok { color: #00f2ea; }
         .link-item:hover .fa-youtube { color: #FF0000; }
-        .link-item:hover .fa-globe { color: #4caf50; }
+        .link-item:hover .fa-globe { color: #00ffd5; }
 
         footer {
-            margin-top: 40px;
-            font-size: 0.75rem;
-            color: #555;
+            margin-top: 50px;
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 20px;
         }
-
     </style>
 </head>
 <body>
@@ -197,7 +188,6 @@
             <img src="rainbow-ebike.png" alt="彩虹電動車" class="profile-img">
         </div>
 
-        <h1>彩虹電動車</h1>
         <p class="description">專業維修｜改裝升級｜道路救援｜客製化服務</p>
 
         <div class="tags">
@@ -244,7 +234,7 @@
         </div>
 
         <footer>
-            &copy; 2024 Rainbow E-Bike. All Rights Reserved.
+            &copy; 2024 彩虹電動車 Rainbow E-Bike. All Rights Reserved.
         </footer>
     </div>
 
