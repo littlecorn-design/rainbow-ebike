@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+
     <style>
         :root {
             --bg-color: #0f0f11;
@@ -28,26 +29,24 @@
             display: flex;
             justify-content: center;
             min-height: 100vh;
-            /* 背景加入深色漸層，增加質感 */
             background-image: radial-gradient(circle at top, #2a2a2a 0%, #0f0f11 60%);
         }
 
         .container {
             width: 100%;
-            max-width: 480px; /* 手機版型大小 */
-            /* 【修改點】減少上方留白，讓整體往上跑 */
-            padding: 20px 20px 40px; 
+            max-width: 480px;
+            /* 【修改點】上方留白從 20px 減少到 10px，下方也減少 */
+            padding: 10px 20px 30px; 
             text-align: center;
         }
 
-        /* 頭像調整 (適用不規則透明 Logo) */
+        /* 頭像調整 */
         .profile-wrapper {
             position: relative;
             width: 100%;
-            /* 【修改點】加大 Logo，原本 200 改成 340 */
             max-width: 340px; 
-            /* 【修改點】調整下方的距離 */
-            margin: 0 auto 10px; 
+            /* 【修改點】下方距離從 10px 減少到 5px */
+            margin: 0 auto 5px; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -57,18 +56,13 @@
             width: 100%;
             height: auto;
             object-fit: contain;
-            
-            /* 不規則圖檔設定 */
             border-radius: 0;
             background-color: transparent;
             border: none;
-            
-            /* [特效] 依照圖片形狀發光 (霓虹感) */
             filter: drop-shadow(0 0 10px rgba(0, 153, 255, 0.5)) drop-shadow(0 0 25px rgba(225, 0, 255, 0.3));
             transition: transform 0.3s ease, filter 0.3s ease;
         }
 
-        /* 滑鼠移過去時的特效 */
         .profile-img:hover {
             transform: scale(1.02) translateY(-2px);
             filter: drop-shadow(0 0 15px rgba(0, 255, 200, 0.7)) drop-shadow(0 0 35px rgba(225, 0, 255, 0.5));
@@ -77,9 +71,10 @@
         .description {
             font-size: 0.95rem;
             color: var(--text-sub);
-            margin-bottom: 25px;
+            /* 【修改點】上下距離都縮小了 */
+            margin-bottom: 15px;
             letter-spacing: 0.5px;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         /* 服務標籤雲 */
@@ -88,7 +83,8 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 8px;
-            margin-bottom: 30px;
+            /* 【修改點】下方距離從 30px 減少到 20px */
+            margin-bottom: 20px;
         }
 
         .tag {
@@ -104,8 +100,8 @@
         .action-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 30px;
+            gap: 12px; 
+            margin-bottom: 20px;
         }
 
         .action-btn {
@@ -135,14 +131,14 @@
         .links-list {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 10px;
         }
 
         .link-item {
             display: flex;
             align-items: center;
             background: var(--card-bg);
-            padding: 16px 25px;
+            padding: 14px 25px;
             border-radius: 50px;
             text-decoration: none;
             color: white;
@@ -174,7 +170,7 @@
         .link-item:hover .fa-globe { color: #00ffd5; }
 
         footer {
-            margin-top: 50px;
+            margin-top: 30px;
             font-size: 0.8rem;
             color: #666;
             margin-bottom: 20px;
@@ -240,3 +236,4 @@
 
 </body>
 </html>
+
