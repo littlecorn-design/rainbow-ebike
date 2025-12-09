@@ -13,8 +13,6 @@
             --card-bg: rgba(255, 255, 255, 0.08);
             --text-main: #ffffff;
             --text-sub: #b0b0b0;
-            /* 開關開啟時的指示燈光顏色 */
-            --indicator-on: #00ffea; 
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -33,90 +31,28 @@
         .container {
             width: 100%;
             max-width: 480px;
+            /* 保持緊湊的上方留白 */
             padding: 10px 20px 30px; 
             text-align: center;
-            position: relative; /* 為了定位開關 */
         }
 
-        /* === [新版] 擬真機械開關區域 === */
-        .switch-container {
-            position: absolute;
-            top: 20px;  /* 距離頂部 */
-            right: 20px; /* 距離右邊 */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            z-index: 20;
-        }
-
-        /* 開關的小圖示 (太陽/月亮) */
-        .switch-icon {
-            font-size: 12px;
-            color: #444; /* 預設暗掉的顏色 */
-            transition: color 0.3s, text-shadow 0.3s;
-        }
-
-        /* 當狀態激活時，圖示發光 */
-        .switch-icon.active-sun {
-            color: #fffb00;
-            text-shadow: 0 0 8px #fffb00;
-        }
-        .switch-icon.active-moon {
-            color: #888; /* 關燈時月亮微亮 */
-        }
-
-        /* 隱藏原本的 checkbox */
-        #lightToggle { display: none; }
-
-        /* 機械開關本體 (底座) */
-        .mech-switch {
+        /* === [新版] 頂部區域 (包含 Logo 和 開關) === */
+        /* 使用 relative 定位，讓開關可以對齊這個區域 */
+        .header-section {
             position: relative;
-            width: 24px;   /* 寬度 */
-            height: 44px;  /* 高度 */
-            background: #1a1a1a;
-            border-radius: 4px;
-            border: 1px solid #333;
-            box-shadow: inset 0 0 5px #000;
-            cursor: pointer;
-        }
-
-        /* 機械開關的「推桿」 */
-        .mech-switch::after {
-            content: '';
-            position: absolute;
-            left: 2px;
-            width: 18px;
-            height: 20px;
-            border-radius: 2px;
-            /* 金屬質感漸層 */
-            background: linear-gradient(to bottom, #555, #333);
-            border-top: 1px solid #666;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            transition: top 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); /* 模擬機械回彈 */
-        }
-
-        /* [狀態：開燈] 推桿在上方 */
-        #lightToggle:checked + .mech-switch::after {
-            top: 2px;
-            background: linear-gradient(to bottom, #666, #444);
-        }
-
-        /* [狀態：關燈] 推桿滑到下方 */
-        #lightToggle:not(:checked) + .mech-switch::after {
-            top: 20px;
-            background: linear-gradient(to bottom, #444, #222);
+            width: 100%;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center; /* 讓 Logo 居中 */
+            align-items: center; /* 垂直置中 */
+            min-height: 100px; /* 確保有足夠高度 */
         }
 
         /* === Logo 區域 === */
         .logo-container {
-            position: relative;
             width: 100%;
-            /* 【修改點】Logo 尺寸縮小一半 (原本340 -> 170) */
-            max-width: 170px;
-            margin: 0 auto 10px; /* 下方留一點距離 */
-            display: flex;
-            justify-content: center;
+            max-width: 170px; /* Logo 大小維持縮小版 */
+            z-index: 1; /* 確保層級 */
         }
 
         /* 定義彩虹流光動畫 */
@@ -139,27 +75,88 @@
             border: none;
             /* 啟動彩虹流光 */
             animation: rainbow-glow 5s linear infinite;
-            transition: transform 0.3s ease, filter 0.3s ease;
+            transition: filter 0.3s ease; /* 只過渡濾鏡效果 */
         }
 
-        /* 關燈狀態：停止動畫並變暗 */
+        /* === [修改點] 關燈狀態 === */
+        /* 不變灰階，只移除動畫和發光特效，變回原圖 */
         .profile-img.lights-off {
-            animation: none !important;
-            filter: drop-shadow(0 0 0 transparent) grayscale(80%) opacity(0.5) !important;
+            animation: none !important; /* 停止流光 */
+            filter: none !important;    /* 移除所有濾鏡 (包含發光)，變回原圖 */
+            opacity: 1 !important;      /* 保持 100% 清晰度 */
         }
 
-        /* === 文字與按鈕樣式 === */
+        /* === [修改點] 開關位置調整 === */
+        .switch-container {
+            position: absolute;
+            right: 0; /* 靠右對齊容器邊緣 */
+            top: 50%; /* 垂直置中 */
+            transform: translateY(-50%); /* 修正垂直置中的偏差 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            z-index: 10; /* 確保在最上層 */
+        }
+
+        /* 開關的小圖示 */
+        .switch-icon {
+            font-size: 12px;
+            color: #444; 
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .switch-icon.active-sun { color: #fffb00; text-shadow: 0 0 8px #fffb00; }
+        .switch-icon.active-moon { color: #888; }
+
+        #lightToggle { display: none; }
+
+        /* 機械開關本體 */
+        .mech-switch {
+            position: relative;
+            width: 24px;
+            height: 44px;
+            background: #1a1a1a;
+            border-radius: 4px;
+            border: 1px solid #333;
+            box-shadow: inset 0 0 5px #000;
+            cursor: pointer;
+        }
+
+        .mech-switch::after {
+            content: '';
+            position: absolute;
+            left: 2px;
+            width: 18px;
+            height: 20px;
+            border-radius: 2px;
+            background: linear-gradient(to bottom, #555, #333);
+            border-top: 1px solid #666;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            transition: top 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        #lightToggle:checked + .mech-switch::after {
+            top: 2px;
+            background: linear-gradient(to bottom, #666, #444);
+        }
+
+        #lightToggle:not(:checked) + .mech-switch::after {
+            top: 20px;
+            background: linear-gradient(to bottom, #444, #222);
+        }
+
+        /* 文字與按鈕樣式 */
         .description {
             font-size: 0.9rem;
             color: var(--text-sub);
-            margin-bottom: 20px;
+            margin-bottom: 25px; /* 增加一點下方距離，因為標籤拿掉了 */
             letter-spacing: 0.5px;
             margin-top: 5px;
         }
 
-        .tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 20px; }
-        .tag { background: rgba(255,255,255,0.1); color: #ddd; font-size: 0.75rem; padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
-        
+        /* [修改點] .tags 標籤相關的 CSS 已全部刪除 */
+
         .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .action-btn { background: var(--card-bg); padding: 15px; border-radius: 15px; text-decoration: none; color: white; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.2s, background 0.2s; backdrop-filter: blur(10px); }
         .action-btn i { font-size: 1.6rem; margin-bottom: 5px; }
@@ -186,31 +183,22 @@
 
     <div class="container">
         
-        <div class="switch-container">
-            <i class="fa-solid fa-sun switch-icon active-sun" id="iconOn"></i>
-            
-            <label>
-                <input type="checkbox" id="lightToggle" checked onchange="toggleLights()">
-                <div class="mech-switch"></div>
-            </label>
+        <div class="header-section">
+            <div class="logo-container">
+                <img src="rainbow-ebike.png" alt="彩虹電動車" class="profile-img" id="logoImg">
+            </div>
 
-            <i class="fa-solid fa-moon switch-icon" id="iconOff"></i>
-        </div>
-
-        <div class="logo-container">
-            <img src="rainbow-ebike.png" alt="彩虹電動車" class="profile-img" id="logoImg">
+            <div class="switch-container">
+                <i class="fa-solid fa-sun switch-icon active-sun" id="iconOn"></i>
+                <label>
+                    <input type="checkbox" id="lightToggle" checked onchange="toggleLights()">
+                    <div class="mech-switch"></div>
+                </label>
+                <i class="fa-solid fa-moon switch-icon" id="iconOff"></i>
+            </div>
         </div>
 
         <p class="description">專業維修｜改裝升級｜道路救援｜客製化服務</p>
-
-        <div class="tags">
-            <span class="tag">微電車零配件</span>
-            <span class="tag">協助領牌</span>
-            <span class="tag">零件批發</span>
-            <span class="tag">電池更換</span>
-            <span class="tag">動力升級</span>
-            <span class="tag">外觀客製化</span>
-        </div>
 
         <div class="action-grid">
             <a href="tel:0921207383" class="action-btn call">
@@ -247,7 +235,7 @@
         </div>
 
         <footer>
-            &copy; 2024 彩虹電動車 Rainbow E-Bike. All Rights Reserved.
+            &copy; 2025 彩虹電動車 Rainbow E-Bike. All Rights Reserved.
         </footer>
     </div>
 
