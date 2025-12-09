@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
     <title>彩虹電動車 Rainbow E-Bike</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,7 +17,7 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* 禁止手機長按出現選單，讓操作更像 APP */
+        /* 全域禁止選取、禁止長按跳出選單 */
         body {
             font-family: 'Noto Sans TC', sans-serif;
             background-color: var(--bg-color);
@@ -27,9 +27,20 @@
             min-height: 100vh;
             background-image: radial-gradient(circle at top, #2a2a2a 0%, #0f0f11 60%);
             transition: background 0.5s;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            user-select: none;
+            
+            /* [關鍵] 禁止手機長按選單與文字選取 */
+            -webkit-touch-callout: none; /* iOS 禁止長按跳出選單 */
+            -webkit-user-select: none;   /* Chrome/Safari 禁止選取 */
+            -moz-user-select: none;      /* Firefox 禁止選取 */
+            -ms-user-select: none;       /* IE/Edge 禁止選取 */
+            user-select: none;           /* 標準禁止選取 */
+        }
+
+        /* 禁止圖片被拖曳 (電腦版體驗更好) */
+        img {
+            -webkit-user-drag: none;
+            user-drag: none;
+            pointer-events: auto; /* 確保還是可以點擊 */
         }
 
         .container {
@@ -46,7 +57,7 @@
             max-width: 170px;
             margin: 0 auto 20px;
             z-index: 1;
-            /* 消除手機點擊時的藍色框框 */
+            /* 消除手機點擊時的藍色/灰色半透明框框 */
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -70,21 +81,19 @@
             border: none;
             cursor: pointer;
             
-            /* 動畫設定：transform 必須非常快 (0.1s) 才會感覺像按鈕 */
-            transition: transform 0.1s cubic-bezier(0.3, 2.0, 0.6, 1.0), filter 0.3s ease;
+            /* 動畫設定：極速響應 */
+            transition: transform 0.08s cubic-bezier(0.3, 2.0, 0.6, 1.0), filter 0.3s ease;
             
             /* 預設開啟流光 */
             animation: rainbow-glow 5s linear infinite;
         }
 
-        /* === [新功能] 按壓狀態 (由 JS 控制) === */
-        /* 當手指碰到時，圖片縮小 */
+        /* 按壓狀態 (JS控制) */
         .profile-img.is-pressed {
-            transform: scale(0.92) !important; /* 縮小到 92% */
+            transform: scale(0.92) !important; 
         }
 
-        /* === 關燈狀態 === */
-        /* 關閉流光，變回原圖 */
+        /* 關燈狀態 */
         .profile-img.lights-off {
             animation: none !important;
             filter: none !important;
@@ -112,20 +121,21 @@
         .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .action-btn { 
             background: var(--card-bg); padding: 15px; border-radius: 15px; text-decoration: none; color: white; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); 
-            /* 按鈕也加上快速縮放動畫 */
             transition: transform 0.1s, background 0.2s; 
+            /* 消除按鈕點擊藍框 */
+            -webkit-tap-highlight-color: transparent;
         }
         .action-btn i { font-size: 1.6rem; margin-bottom: 5px; }
         .action-btn.call { background: linear-gradient(135deg, rgba(255, 65, 108, 0.2), rgba(255, 75, 43, 0.2)); }
         .action-btn.map { background: linear-gradient(135deg, rgba(17, 153, 142, 0.2), rgba(56, 239, 125, 0.2)); }
         
-        /* 按鈕點擊效果 */
         .action-btn:active { transform: scale(0.95); }
 
         .links-list { display: flex; flex-direction: column; gap: 10px; }
         .link-item { 
             display: flex; align-items: center; background: var(--card-bg); padding: 14px 25px; border-radius: 50px; text-decoration: none; color: white; border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden;
             transition: transform 0.1s, background 0.3s;
+            -webkit-tap-highlight-color: transparent;
         }
         .link-item:active { transform: scale(0.98); background: rgba(255,255,255,0.2); }
         .link-item i { font-size: 1.6rem; width: 35px; margin-right: 15px; text-align: center; }
@@ -193,13 +203,8 @@
     <script>
         const logo = document.getElementById('logoImg');
 
-        // 1. 處理「視覺上的回彈」 (手指碰到就縮，放開就彈回來)
-        function pressDown() {
-            logo.classList.add('is-pressed');
-        }
-        function pressUp() {
-            logo.classList.remove('is-pressed');
-        }
+        function pressDown() { logo.classList.add('is-pressed'); }
+        function pressUp() { logo.classList.remove('is-pressed'); }
 
         // 綁定觸控事件 (手機專用)
         logo.addEventListener('touchstart', pressDown, {passive: true});
@@ -207,16 +212,17 @@
         // 綁定滑鼠事件 (電腦專用)
         logo.addEventListener('mousedown', pressDown);
         logo.addEventListener('mouseup', pressUp);
-        logo.addEventListener('mouseleave', pressUp); // 滑鼠移出也算放開
+        logo.addEventListener('mouseleave', pressUp);
 
-        // 2. 處理「開關燈邏輯」 (點擊後切換)
+        // [關鍵] 禁止 Logo 跳出右鍵選單 (長按選單)
+        logo.addEventListener('contextmenu', function(e) {
+            e.preventDefault(); // 阻止瀏覽器預設選單
+        });
+
+        // 開關燈邏輯
         logo.addEventListener('click', function() {
             logo.classList.toggle('lights-off');
-            
-            // 為了確保手機震動回饋 (如果瀏覽器支援)
-            if (navigator.vibrate) {
-                navigator.vibrate(10); // 極短震動 10ms
-            }
+            if (navigator.vibrate) { navigator.vibrate(10); }
         });
     </script>
 
