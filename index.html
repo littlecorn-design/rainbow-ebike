@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-
     <style>
         :root {
             --bg-color: #0f0f11;
@@ -16,11 +15,7 @@
             --text-sub: #b0b0b0;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Noto Sans TC', sans-serif;
@@ -30,22 +25,52 @@
             justify-content: center;
             min-height: 100vh;
             background-image: radial-gradient(circle at top, #2a2a2a 0%, #0f0f11 60%);
+            transition: background 0.5s; /* 背景切換動畫 */
         }
 
         .container {
             width: 100%;
             max-width: 480px;
-            /* 【修改點】上方留白從 20px 減少到 10px，下方也減少 */
             padding: 10px 20px 30px; 
             text-align: center;
+            position: relative; /* 為了定位開關 */
         }
 
-        /* 頭像調整 */
+        /* === [新功能] 燈光開關按鈕樣式 === */
+        .light-switch {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffeba7; /* 預設燈泡顏色 */
+            box-shadow: 0 0 10px rgba(255, 235, 167, 0.2);
+        }
+
+        .light-switch:hover { transform: scale(1.1); }
+        
+        /* 當燈關掉時，開關本身的樣子 */
+        .light-switch.off {
+            color: #555;
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: none;
+            border-color: #333;
+        }
+
+        /* === Logo 區域 === */
         .profile-wrapper {
             position: relative;
             width: 100%;
             max-width: 340px; 
-            /* 【修改點】下方距離從 10px 減少到 5px */
             margin: 0 auto 5px; 
             display: flex;
             justify-content: center;
@@ -59,31 +84,36 @@
             border-radius: 0;
             background-color: transparent;
             border: none;
-            filter: drop-shadow(0 0 10px rgba(0, 153, 255, 0.5)) drop-shadow(0 0 25px rgba(225, 0, 255, 0.3));
-            transition: transform 0.3s ease, filter 0.3s ease;
+            /* 預設：開燈狀態 (強烈光暈) */
+            filter: drop-shadow(0 0 10px rgba(0, 153, 255, 0.6)) drop-shadow(0 0 25px rgba(225, 0, 255, 0.4));
+            transition: transform 0.3s ease, filter 0.5s ease; /* filter 0.5s 讓開關燈有漸變感 */
         }
 
         .profile-img:hover {
             transform: scale(1.02) translateY(-2px);
-            filter: drop-shadow(0 0 15px rgba(0, 255, 200, 0.7)) drop-shadow(0 0 35px rgba(225, 0, 255, 0.5));
+            filter: drop-shadow(0 0 15px rgba(0, 255, 200, 0.8)) drop-shadow(0 0 35px rgba(225, 0, 255, 0.6));
         }
 
+        /* === [關鍵] 關燈狀態的 CSS Class === */
+        /* 當圖片加上這個 class 時，光暈消失，變暗 */
+        .profile-img.lights-off {
+            filter: drop-shadow(0 0 0 transparent) grayscale(30%) opacity(0.8) !important;
+        }
+
+        /* 文字與其他樣式 (保持緊湊) */
         .description {
             font-size: 0.95rem;
             color: var(--text-sub);
-            /* 【修改點】上下距離都縮小了 */
             margin-bottom: 15px;
             letter-spacing: 0.5px;
             margin-top: 5px;
         }
 
-        /* 服務標籤雲 */
         .tags {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 8px;
-            /* 【修改點】下方距離從 30px 減少到 20px */
             margin-bottom: 20px;
         }
 
@@ -96,11 +126,10 @@
             border: 1px solid rgba(255,255,255,0.05);
         }
 
-        /* 按鈕樣式 */
         .action-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px; 
+            gap: 12px;
             margin-bottom: 20px;
         }
 
@@ -127,7 +156,6 @@
         .action-btn:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.4); }
         .action-btn:active { transform: scale(0.98); }
 
-        /* 社群連結 */
         .links-list {
             display: flex;
             flex-direction: column;
@@ -154,13 +182,7 @@
             border-color: rgba(255,255,255,0.3);
         }
 
-        .link-item i {
-            font-size: 1.6rem;
-            width: 35px;
-            margin-right: 15px;
-            text-align: center;
-        }
-
+        .link-item i { font-size: 1.6rem; width: 35px; margin-right: 15px; text-align: center; }
         .link-item span { font-size: 1.05rem; font-weight: 500; flex-grow: 1; }
         
         .link-item:hover .fa-instagram { color: #E1306C; }
@@ -180,8 +202,12 @@
 <body>
 
     <div class="container">
+        <div class="light-switch" onclick="toggleLights()" title="開/關燈">
+            <i class="fa-solid fa-lightbulb"></i>
+        </div>
+
         <div class="profile-wrapper">
-            <img src="rainbow-ebike.png" alt="彩虹電動車" class="profile-img">
+            <img src="rainbow-ebike.png" alt="彩虹電動車" class="profile-img" id="logoImg">
         </div>
 
         <p class="description">專業維修｜改裝升級｜道路救援｜客製化服務</p>
@@ -234,6 +260,16 @@
         </footer>
     </div>
 
+    <script>
+        function toggleLights() {
+            const logo = document.getElementById('logoImg');
+            const switchBtn = document.querySelector('.light-switch');
+            
+            // 切換 CSS class (開 -> 關 / 關 -> 開)
+            logo.classList.toggle('lights-off');
+            switchBtn.classList.toggle('off');
+        }
+    </script>
+
 </body>
 </html>
-
