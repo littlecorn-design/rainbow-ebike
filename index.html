@@ -13,6 +13,9 @@
             --card-bg: rgba(255, 255, 255, 0.08);
             --text-main: #ffffff;
             --text-sub: #b0b0b0;
+            /* 開關顏色設定 */
+            --switch-on: #34c759; /* iPhone 綠色 */
+            --switch-off: #3a3a3c; /* iPhone 深灰色 */
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -25,189 +28,180 @@
             justify-content: center;
             min-height: 100vh;
             background-image: radial-gradient(circle at top, #2a2a2a 0%, #0f0f11 60%);
-            transition: background 0.5s; /* 背景切換動畫 */
+            transition: background 0.5s;
         }
 
         .container {
             width: 100%;
             max-width: 480px;
-            padding: 10px 20px 30px; 
+            /* 【修改點】上方留白極限壓縮至 5px */
+            padding: 5px 20px 30px; 
             text-align: center;
-            position: relative; /* 為了定位開關 */
+            position: relative;
         }
 
-        /* === [新功能] 燈光開關按鈕樣式 === */
-        .light-switch {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            z-index: 10;
-            transition: all 0.3s;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #ffeba7; /* 預設燈泡顏色 */
-            box-shadow: 0 0 10px rgba(255, 235, 167, 0.2);
-        }
-
-        .light-switch:hover { transform: scale(1.1); }
-        
-        /* 當燈關掉時，開關本身的樣子 */
-        .light-switch.off {
-            color: #555;
-            background: rgba(0, 0, 0, 0.3);
-            box-shadow: none;
-            border-color: #333;
-        }
-
-        /* === Logo 區域 === */
-        .profile-wrapper {
+        /* === Logo 與開關的包裝容器 (為了定位) === */
+        .logo-container {
             position: relative;
             width: 100%;
-            max-width: 340px; 
-            margin: 0 auto 5px; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            max-width: 340px;
+            /* 【修改點】下方間距壓縮至 0 */
+            margin: 0 auto 0px;
+            /* 稍微增加一點 padding 讓開關不要貼太死 */
+            padding-bottom: 10px; 
         }
 
-        .profile-img {
-            width: 100%;
-            height: auto;
-            object-fit: contain;
-            border-radius: 0;
-            background-color: transparent;
-            border: none;
-            /* 預設：開燈狀態 (強烈光暈) */
-            filter: drop-shadow(0 0 10px rgba(0, 153, 255, 0.6)) drop-shadow(0 0 25px rgba(225, 0, 255, 0.4));
-            transition: transform 0.3s ease, filter 0.5s ease; /* filter 0.5s 讓開關燈有漸變感 */
-        }
+        /* Logo 圖片本體 */
+       /* === 貼上這段新的流光特效 === */
+/* 定義彩虹流光動畫關鍵影格 */
+@keyframes rainbow-glow {
+    0% { filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.8)) drop-shadow(0 0 30px rgba(255, 0, 0, 0.4)); } /* 紅 */
+    15% { filter: drop-shadow(0 0 10px rgba(255, 165, 0, 0.8)) drop-shadow(0 0 30px rgba(255, 165, 0, 0.4)); } /* 橙 */
+    30% { filter: drop-shadow(0 0 10px rgba(255, 255, 0, 0.8)) drop-shadow(0 0 30px rgba(255, 255, 0, 0.4)); } /* 黃 */
+    45% { filter: drop-shadow(0 0 10px rgba(0, 255, 0, 0.8)) drop-shadow(0 0 30px rgba(0, 255, 0, 0.4)); } /* 綠 */
+    60% { filter: drop-shadow(0 0 10px rgba(0, 127, 255, 0.8)) drop-shadow(0 0 30px rgba(0, 127, 255, 0.4)); } /* 藍 */
+    75% { filter: drop-shadow(0 0 10px rgba(139, 0, 255, 0.8)) drop-shadow(0 0 30px rgba(139, 0, 255, 0.4)); } /* 紫 */
+    100% { filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.8)) drop-shadow(0 0 30px rgba(255, 0, 0, 0.4)); } /* 回到紅 */
+}
 
-        .profile-img:hover {
-            transform: scale(1.02) translateY(-2px);
-            filter: drop-shadow(0 0 15px rgba(0, 255, 200, 0.8)) drop-shadow(0 0 35px rgba(225, 0, 255, 0.6));
-        }
+/* Logo 圖片本體 (應用流光特效) */
+.profile-img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 0;
+    background-color: transparent;
+    border: none;
+    /* 應用彩虹流光動畫：5秒跑完一圈，無限循環，線性速度 */
+    animation: rainbow-glow 5s linear infinite;
+    transition: transform 0.3s ease, filter 0.5s ease; /* 這裡保留 filter transition 是為了關燈時的漸變 */
+}
 
-        /* === [關鍵] 關燈狀態的 CSS Class === */
-        /* 當圖片加上這個 class 時，光暈消失，變暗 */
+/* 關燈狀態：停止動畫並變暗 */
+.profile-img.lights-off {
+    animation: none !important; /* 強制停止流光動畫 */
+    filter: drop-shadow(0 0 0 transparent) grayscale(50%) opacity(0.7) !important;
+}
+/* ============================ */
+
+        /* 關燈狀態 Class */
         .profile-img.lights-off {
-            filter: drop-shadow(0 0 0 transparent) grayscale(30%) opacity(0.8) !important;
+            filter: drop-shadow(0 0 0 transparent) grayscale(50%) opacity(0.7) !important;
         }
 
-        /* 文字與其他樣式 (保持緊湊) */
+        /* === [新功能] iPhone 風格滑塊開關 === */
+        /* 開關容器 (定位在 Logo 右下) */
+        .switch-wrapper {
+            position: absolute;
+            bottom: 5px; /* 距離底部 */
+            right: 10px; /* 距離右側 */
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* 開關本體 (橢圓形底座) */
+        .ios-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 30px;
+        }
+
+        /* 隱藏原本的 checkbox */
+        .ios-switch input { display: none; }
+
+        /* 滑塊軌道 */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--switch-on); /* 預設開啟 (綠色) */
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        /* 滑塊圓鈕 */
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 22px; /* 預設在右邊 (開啟狀態) */
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* 當 Checkbox 被取消勾選時 (關燈狀態) */
+        input:not(:checked) + .slider {
+            background-color: var(--switch-off); /* 變灰色 */
+        }
+
+        input:not(:checked) + .slider:before {
+            transform: translateX(-20px); /* 圓鈕滑到左邊 */
+        }
+
+        /* 開關旁的小圖示 */
+        .switch-icon { color: #aaa; font-size: 0.9rem; }
+
+        /* === 其他內容樣式 (維持緊湊) === */
         .description {
             font-size: 0.95rem;
             color: var(--text-sub);
             margin-bottom: 15px;
             letter-spacing: 0.5px;
-            margin-top: 5px;
+            /* 【修改點】上方間距稍微增加一點點，避免與開關打架 */
+            margin-top: 15px; 
         }
 
         .tags {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 20px;
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 20px;
         }
-
         .tag {
-            background: rgba(255,255,255,0.1);
-            color: #ddd;
-            font-size: 0.75rem;
-            padding: 5px 12px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.1); color: #ddd; font-size: 0.75rem; padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);
         }
-
         .action-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;
         }
-
         .action-btn {
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 15px;
-            text-decoration: none;
-            color: white;
-            font-weight: bold;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: transform 0.2s, background 0.2s;
-            backdrop-filter: blur(10px);
+            background: var(--card-bg); padding: 15px; border-radius: 15px; text-decoration: none; color: white; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.2s, background 0.2s; backdrop-filter: blur(10px);
         }
-
         .action-btn i { font-size: 1.6rem; margin-bottom: 5px; }
         .action-btn.call { background: linear-gradient(135deg, rgba(255, 65, 108, 0.2), rgba(255, 75, 43, 0.2)); }
         .action-btn.map { background: linear-gradient(135deg, rgba(17, 153, 142, 0.2), rgba(56, 239, 125, 0.2)); }
-
         .action-btn:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.4); }
         .action-btn:active { transform: scale(0.98); }
-
-        .links-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
+        .links-list { display: flex; flex-direction: column; gap: 10px; }
         .link-item {
-            display: flex;
-            align-items: center;
-            background: var(--card-bg);
-            padding: 14px 25px;
-            border-radius: 50px;
-            text-decoration: none;
-            color: white;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            display: flex; align-items: center; background: var(--card-bg); padding: 14px 25px; border-radius: 50px; text-decoration: none; color: white; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease; position: relative; overflow: hidden;
         }
-        
-        .link-item:hover {
-            background: rgba(255,255,255,0.15);
-            transform: translateY(-2px);
-            border-color: rgba(255,255,255,0.3);
-        }
-
+        .link-item:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); border-color: rgba(255,255,255,0.3); }
         .link-item i { font-size: 1.6rem; width: 35px; margin-right: 15px; text-align: center; }
         .link-item span { font-size: 1.05rem; font-weight: 500; flex-grow: 1; }
-        
         .link-item:hover .fa-instagram { color: #E1306C; }
         .link-item:hover .fa-facebook { color: #1877F2; }
         .link-item:hover .fa-tiktok { color: #00f2ea; }
         .link-item:hover .fa-youtube { color: #FF0000; }
         .link-item:hover .fa-globe { color: #00ffd5; }
-
-        footer {
-            margin-top: 30px;
-            font-size: 0.8rem;
-            color: #666;
-            margin-bottom: 20px;
-        }
+        footer { margin-top: 30px; font-size: 0.8rem; color: #666; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="light-switch" onclick="toggleLights()" title="開/關燈">
-            <i class="fa-solid fa-lightbulb"></i>
-        </div>
-
-        <div class="profile-wrapper">
+        <div class="logo-container">
             <img src="rainbow-ebike.png" alt="彩虹電動車" class="profile-img" id="logoImg">
+            
+            <div class="switch-wrapper">
+                <i class="fa-solid fa-lightbulb switch-icon"></i> <label class="ios-switch">
+                    <input type="checkbox" id="lightToggle" checked onchange="toggleLights()">
+                    <span class="slider"></span>
+                </label>
+            </div>
         </div>
 
         <p class="description">專業維修｜改裝升級｜道路救援｜客製化服務</p>
@@ -263,11 +257,15 @@
     <script>
         function toggleLights() {
             const logo = document.getElementById('logoImg');
-            const switchBtn = document.querySelector('.light-switch');
+            const toggle = document.getElementById('lightToggle');
             
-            // 切換 CSS class (開 -> 關 / 關 -> 開)
-            logo.classList.toggle('lights-off');
-            switchBtn.classList.toggle('off');
+            if (toggle.checked) {
+                // 如果滑塊是開的 -> 移除關燈樣式 (變亮)
+                logo.classList.remove('lights-off');
+            } else {
+                // 如果滑塊是關的 -> 加入關燈樣式 (變暗)
+                logo.classList.add('lights-off');
+            }
         }
     </script>
 
