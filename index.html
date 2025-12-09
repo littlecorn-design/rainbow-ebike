@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>彩虹電動車 Rainbow E-Bike</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,6 +17,7 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
+        /* 禁止手機長按出現選單，讓操作更像 APP */
         body {
             font-family: 'Noto Sans TC', sans-serif;
             background-color: var(--bg-color);
@@ -26,12 +27,15 @@
             min-height: 100vh;
             background-image: radial-gradient(circle at top, #2a2a2a 0%, #0f0f11 60%);
             transition: background 0.5s;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .container {
             width: 100%;
             max-width: 480px;
-            padding: 40px 20px 30px; /* 上方留白稍微加回來一點，因為沒有開關擋路了 */
+            padding: 40px 20px 30px; 
             text-align: center;
         }
 
@@ -42,6 +46,8 @@
             max-width: 170px;
             margin: 0 auto 20px;
             z-index: 1;
+            /* 消除手機點擊時的藍色框框 */
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* 定義彩虹流光動畫 */
@@ -62,34 +68,34 @@
             border-radius: 0;
             background-color: transparent;
             border: none;
-            /* 啟動彩虹流光 */
-            animation: rainbow-glow 5s linear infinite;
-            transition: transform 0.2s, filter 0.3s ease;
-            
-            /* [修改點] 讓游標變成手指形狀，暗示可以點擊 */
             cursor: pointer;
-            /* 加入一點點點擊時的彈性動畫 */
-            -webkit-tap-highlight-color: transparent; /* 手機點擊時不要有藍色框框 */
+            
+            /* 動畫設定：transform 必須非常快 (0.1s) 才會感覺像按鈕 */
+            transition: transform 0.1s cubic-bezier(0.3, 2.0, 0.6, 1.0), filter 0.3s ease;
+            
+            /* 預設開啟流光 */
+            animation: rainbow-glow 5s linear infinite;
         }
 
-        /* 點擊瞬間的效果 (像按按鈕一樣縮一下) */
-        .profile-img:active {
-            transform: scale(0.95);
+        /* === [新功能] 按壓狀態 (由 JS 控制) === */
+        /* 當手指碰到時，圖片縮小 */
+        .profile-img.is-pressed {
+            transform: scale(0.92) !important; /* 縮小到 92% */
         }
 
         /* === 關燈狀態 === */
-        /* 不變灰階，只移除動畫和發光特效，變回原圖 */
+        /* 關閉流光，變回原圖 */
         .profile-img.lights-off {
             animation: none !important;
             filter: none !important;
             opacity: 1 !important;
         }
         
-        /* 加入一個小小的提示文字，告訴大家可以點 */
+        /* 提示文字 */
         .hint-text {
             font-size: 0.75rem;
             color: #555;
-            margin-top: -15px; /* 往上拉一點 */
+            margin-top: -15px; 
             margin-bottom: 25px;
             opacity: 0.6;
         }
@@ -104,23 +110,31 @@
         }
 
         .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .action-btn { background: var(--card-bg); padding: 15px; border-radius: 15px; text-decoration: none; color: white; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.2s, background 0.2s; backdrop-filter: blur(10px); }
+        .action-btn { 
+            background: var(--card-bg); padding: 15px; border-radius: 15px; text-decoration: none; color: white; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); 
+            /* 按鈕也加上快速縮放動畫 */
+            transition: transform 0.1s, background 0.2s; 
+        }
         .action-btn i { font-size: 1.6rem; margin-bottom: 5px; }
         .action-btn.call { background: linear-gradient(135deg, rgba(255, 65, 108, 0.2), rgba(255, 75, 43, 0.2)); }
         .action-btn.map { background: linear-gradient(135deg, rgba(17, 153, 142, 0.2), rgba(56, 239, 125, 0.2)); }
-        .action-btn:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.4); }
-        .action-btn:active { transform: scale(0.98); }
         
+        /* 按鈕點擊效果 */
+        .action-btn:active { transform: scale(0.95); }
+
         .links-list { display: flex; flex-direction: column; gap: 10px; }
-        .link-item { display: flex; align-items: center; background: var(--card-bg); padding: 14px 25px; border-radius: 50px; text-decoration: none; color: white; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease; position: relative; overflow: hidden; }
-        .link-item:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); border-color: rgba(255,255,255,0.3); }
+        .link-item { 
+            display: flex; align-items: center; background: var(--card-bg); padding: 14px 25px; border-radius: 50px; text-decoration: none; color: white; border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden;
+            transition: transform 0.1s, background 0.3s;
+        }
+        .link-item:active { transform: scale(0.98); background: rgba(255,255,255,0.2); }
         .link-item i { font-size: 1.6rem; width: 35px; margin-right: 15px; text-align: center; }
         .link-item span { font-size: 1.05rem; font-weight: 500; flex-grow: 1; }
-        .link-item:hover .fa-instagram { color: #E1306C; }
-        .link-item:hover .fa-facebook { color: #1877F2; }
-        .link-item:hover .fa-tiktok { color: #00f2ea; }
-        .link-item:hover .fa-youtube { color: #FF0000; }
-        .link-item:hover .fa-globe { color: #00ffd5; }
+        .link-item .fa-instagram { color: #E1306C; }
+        .link-item .fa-facebook { color: #1877F2; }
+        .link-item .fa-tiktok { color: #00f2ea; }
+        .link-item .fa-youtube { color: #FF0000; }
+        .link-item .fa-globe { color: #00ffd5; }
         
         footer { margin-top: 30px; font-size: 0.8rem; color: #666; margin-bottom: 20px; }
     </style>
@@ -130,7 +144,7 @@
     <div class="container">
         
         <div class="logo-container">
-            <img src="rainbow-ebike.png" alt="彩虹電動車" class="profile-img" id="logoImg" onclick="toggleLights()">
+            <img src="rainbow-ebike.png" alt="彩虹電動車" class="profile-img" id="logoImg">
         </div>
 
         <div class="hint-text"><i class="fa-solid fa-arrow-up"></i> 點擊 Logo 開關燈光</div>
@@ -177,12 +191,33 @@
     </div>
 
     <script>
-        function toggleLights() {
-            const logo = document.getElementById('logoImg');
-            
-            // 直接切換 class，不需要檢查開關狀態了，因為圖片本身就是開關
-            logo.classList.toggle('lights-off');
+        const logo = document.getElementById('logoImg');
+
+        // 1. 處理「視覺上的回彈」 (手指碰到就縮，放開就彈回來)
+        function pressDown() {
+            logo.classList.add('is-pressed');
         }
+        function pressUp() {
+            logo.classList.remove('is-pressed');
+        }
+
+        // 綁定觸控事件 (手機專用)
+        logo.addEventListener('touchstart', pressDown, {passive: true});
+        logo.addEventListener('touchend', pressUp, {passive: true});
+        // 綁定滑鼠事件 (電腦專用)
+        logo.addEventListener('mousedown', pressDown);
+        logo.addEventListener('mouseup', pressUp);
+        logo.addEventListener('mouseleave', pressUp); // 滑鼠移出也算放開
+
+        // 2. 處理「開關燈邏輯」 (點擊後切換)
+        logo.addEventListener('click', function() {
+            logo.classList.toggle('lights-off');
+            
+            // 為了確保手機震動回饋 (如果瀏覽器支援)
+            if (navigator.vibrate) {
+                navigator.vibrate(10); // 極短震動 10ms
+            }
+        });
     </script>
 
 </body>
