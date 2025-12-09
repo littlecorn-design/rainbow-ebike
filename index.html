@@ -3,75 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>彩虹電動車業</title>
+    <title>彩虹電動車 Rainbow E-Bike</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body {
-            font-family: "Noto Sans TC", sans-serif;
+        :root {
+            --bg-color: #0f0f11;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-sub: #b0b0b0;
+            --accent-rainbow: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            text-align: center;
-            background-color: #f7f7f7;
-            color: #333;
         }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at top, #2a2a2a 0%, #0f0f11 60%);
+        }
+
         .container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
+            width: 100%;
+            max-width: 480px; /* 手機版型大小 */
+            padding: 40px 20px;
+            text-align: center;
         }
-        img {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            border: 3px solid #ccc;
-            margin-top: 40px;
-            background-color: white;
-            object-fit: cover;
+
+        /* 頭像與彩虹光圈動畫 */
+/* 頭像調整 (適用不規則透明 Logo) */
+.profile-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 200px; /* 這裡可以調整 Logo 的最大顯示寬度 */
+    margin: 0 auto 30px; /* 增加一點下方的距離 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-img {
+    width: 100%;
+    height: auto; /* 高度自動，維持原本比例 */
+    object-fit: contain; /* 確保整張圖都完整顯示，不裁切 */
+
+    /* 移除原本強制圓形和白底的設定 */
+    border-radius: 0;
+    background-color: transparent;
+    border: none;
+
+    /* [重點特效] 加入依照圖片形狀的發光效果 (Drop Shadow) */
+    /* 這裡用了兩層陰影，製造出藍紫色的霓虹光暈 */
+    filter: drop-shadow(0 0 15px rgba(0, 153, 255, 0.6)) drop-shadow(0 0 30px rgba(225, 0, 255, 0.4));
+
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+/* 滑鼠移過去時的互動特效：稍微放大並增強光暈 */
+.profile-img:hover {
+    transform: scale(1.08) translateY(-5px);
+    filter: drop-shadow(0 0 20px rgba(0, 255, 200, 0.8)) drop-shadow(0 0 40px rgba(225, 0, 255, 0.6));
+}
         }
+
         h1 {
-            font-size: 26px;
-            margin: 15px 0 8px;
-            font-weight: 600;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
         }
-        p {
-            font-size: 14px;
+
+        .description {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin-bottom: 20px;
+        }
+
+        /* 服務標籤雲 */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
             margin-bottom: 30px;
-            color: #555;
-            line-height: 1.6;
         }
-        .link {
-            display: block;
-            border: 1px solid #ccc;
-            padding: 14px;
-            margin: 10px 0;
-            border-radius: 10px;
+
+        .tag {
+            background: rgba(255,255,255,0.1);
+            color: #ddd;
+            font-size: 0.75rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* 重要功能按鈕區 (兩欄) */
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .action-btn {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 15px;
             text-decoration: none;
-            color: #333;
-            font-size: 16px;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .action-btn i { font-size: 1.5rem; }
+        
+        .action-btn.call { background: linear-gradient(135deg, #ff416c, #ff4b2b); }
+        .action-btn.map { background: linear-gradient(135deg, #11998e, #38ef7d); }
+
+        .action-btn:active { transform: scale(0.95); }
+
+        /* 社群連結按鈕 */
+        .links-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 16px 20px;
+            border-radius: 50px; /* 膠囊狀 */
+            text-decoration: none;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .link-item:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .link-item i {
+            font-size: 1.5rem;
+            width: 30px;
+            margin-right: 15px;
+            text-align: center;
+        }
+
+        .link-item span {
+            font-size: 1rem;
             font-weight: 500;
-            background-color: white;
-            transition: all 0.2s;
+            flex-grow: 1;
         }
-        .link:hover {
-            background-color: #f0f0f0;
-            transform: scale(1.02);
+        
+        /* 針對不同品牌的顏色微調 (Hover時) */
+        .link-item:hover .fa-instagram { color: #E1306C; }
+        .link-item:hover .fa-facebook { color: #1877F2; }
+        .link-item:hover .fa-tiktok { color: #00f2ea; }
+        .link-item:hover .fa-youtube { color: #FF0000; }
+        .link-item:hover .fa-globe { color: #4caf50; }
+
+        footer {
+            margin-top: 40px;
+            font-size: 0.75rem;
+            color: #555;
         }
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Logo -->
-        <img src="rainbow-ebike.png" alt="rainbow-ebike.png">
-        
-        <!-- 名稱 -->
-        <h1>彩虹電動車</h1>
-        <p>微電零配件批發零售｜協助領牌｜道路救援｜電池更換｜專業維修｜完整售後｜動力續航外觀客製化提升</p>
 
-        <!-- 社群連結 -->
-        <a href="https://www.instagram.com/taoyuan.ebike307?igsh=MXFpNzk3MzBvdGZlYw%3D%3D&utm_source=qr" target="_blank" class="link"> Instagram</a>
-        <a href="https://www.facebook.com/share/14KBmMv5HrB/?mibextid=wwXIfr" target="_blank" class="link"> Facebook</a>
-        <a href="https://www.tiktok.com/@307rainbow?_t=ZS-8ymJT0OfWy8&_r=1" target="_blank" class="link"> TikTok</a>
-        <a href="https://www.youtube.com/@%E5%BD%A9%E8%99%B9%E9%9B%BB%E5%8B%95%E8%BB%8A/shorts" target="_blank" class="link"> YouTube</a>
-        <a href="https://rainbowebike.easy.co/" target="_blank" class="link"> 官方網站</a>
+    <div class="container">
+        <div class="profile-wrapper">
+            <img src="rainbow-ebike.png" alt="彩虹電動車" class="profile-img">
+        </div>
+
+        <h1>彩虹電動車</h1>
+        <p class="description">專業維修｜改裝升級｜道路救援｜客製化服務</p>
+
+        <div class="tags">
+            <span class="tag">微電零配件</span>
+            <span class="tag">協助領牌</span>
+            <span class="tag">道路救援</span>
+            <span class="tag">電池更換</span>
+            <span class="tag">動力升級</span>
+            <span class="tag">外觀客製化</span>
+        </div>
+
+        <div class="action-grid">
+            <a href="tel:0921207383" class="action-btn call">
+                <i class="fa-solid fa-phone-volume"></i>
+                <span>一鍵撥號</span>
+            </a>
+            <a href="https://maps.app.goo.gl/77Xb2XhsKU763jBH6" target="_blank" class="action-btn map">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>導航去店裡</span>
+            </a>
+        </div>
+
+        <div class="links-list">
+            <a href="https://rainbowebike.easy.co/" target="_blank" class="link-item">
+                <i class="fa-solid fa-globe"></i>
+                <span>官方網站 (線上選購)</span>
+            </a>
+            <a href="https://www.instagram.com/taoyuan.ebike307?igsh=MXFpNzk3MzBvdGZlYw%3D%3D&utm_source=qr" target="_blank" class="link-item">
+                <i class="fa-brands fa-instagram"></i>
+                <span>Instagram 作品集</span>
+            </a>
+            <a href="https://www.facebook.com/share/14KBmMv5HrB/?mibextid=wwXIfr" target="_blank" class="link-item">
+                <i class="fa-brands fa-facebook"></i>
+                <span>Facebook 粉絲專頁</span>
+            </a>
+            <a href="https://www.tiktok.com/@307rainbow?_t=ZS-8ymJT0OfWy8&_r=1" target="_blank" class="link-item">
+                <i class="fa-brands fa-tiktok"></i>
+                <span>TikTok 短影片</span>
+            </a>
+            <a href="https://www.youtube.com/@%E5%BD%A9%E8%99%B9%E9%9B%BB%E5%8B%95%E8%BB%8A/shorts" target="_blank" class="link-item">
+                <i class="fa-brands fa-youtube"></i>
+                <span>YouTube 頻道</span>
+            </a>
+        </div>
+
+        <footer>
+            &copy; 2024 Rainbow E-Bike. All Rights Reserved.
+        </footer>
     </div>
+
 </body>
 </html>
